@@ -23,7 +23,7 @@ const injectSWRegisterWithContent = script => publicDir => {
   const fileContent = fs.readFileSync(indexHTMLPath, "utf-8");
 
   // early return if it has been injected before
-  if (fileContent.includes(`${script}</body></html>`)) {
+  if (fileContent.includes(workerName)) {
     return;
   }
 
