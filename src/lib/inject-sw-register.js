@@ -1,37 +1,47 @@
-import fs from "fs";
-import path from "path";
-import { workerName } from "./constants";
+'use strict';
 
-const template = fs.readFileSync(
-  path.join(__dirname, "./template.js"),
-  "utf-8"
-);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-const helperSWRegister = function() {
-  const registerContent = template.replace("__workerName__", workerName);
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _constants = require('./constants');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var template = _fs2.default.readFileSync(_path2.default.join(__dirname, './template.js'), 'utf-8');
+
+var helperSWRegister = function helperSWRegister() {
+  var registerContent = template.replace('__workerName__', _constants.workerName);
   return `<script>${registerContent}</script>`;
 };
 
-const injectSWRegisterWithContent = script => publicDir => {
-  const indexHTMLPath = path.join(publicDir, "index.html");
+var injectSWRegisterWithContent = function injectSWRegisterWithContent(script) {
+  return function (publicDir) {
+    var indexHTMLPath = _path2.default.join(publicDir, 'index.html');
 
-  // early return when no index.html presets in public directory
-  if (!fs.existsSync(indexHTMLPath)) {
-    return;
-  }
+    // early return when no index.html presets in public directory
+    if (!_fs2.default.existsSync(indexHTMLPath)) {
+      return;
+    }
 
-  const fileContent = fs.readFileSync(indexHTMLPath, "utf-8");
+    var fileContent = _fs2.default.readFileSync(indexHTMLPath, 'utf-8');
 
-  // early return if it has been injected before
-  if (fileContent.includes(workerName)) {
-    return;
-  }
+    // early return if it has been injected before
+    if (fileContent.includes(_constants.workerName)) {
+      return;
+    }
 
-  const injectedContent = fileContent.replace(
-    /<\/body>\s*<\/html>\s*$/,
-    `${script}</body></html>`
-  );
-  fs.writeFileSync(indexHTMLPath, injectedContent);
+    var injectedContent = fileContent.replace(/<\/body>\s*<\/html>\s*$/, `${script}</body></html>`);
+    _fs2.default.writeFileSync(indexHTMLPath, injectedContent);
+  };
 };
 
-export default injectSWRegisterWithContent(helperSWRegister());
+exports.default = injectSWRegisterWithContent(helperSWRegister());

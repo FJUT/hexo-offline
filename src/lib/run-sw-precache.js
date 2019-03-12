@@ -1,44 +1,57 @@
-import fs from "fs";
-import path from "path";
-import SWPrecache from "sw-precache";
-import { workerName } from "./constants";
+'use strict';
 
-const generateSWPrecacheConfig = (
-  { root, publicDir, logger },
-  extraSWPrecacheConfig
-) => {
-  const hexoPublicDir = publicDir;
-  const rootPrefix = root.replace(/\/$/, "");
-  return Object.assign(
-    {
-      logger,
-      replacePrefix: rootPrefix,
-      staticFileGlobs: [
-        hexoPublicDir + "/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff}"
-      ],
-      stripPrefix: hexoPublicDir
-    },
-    extraSWPrecacheConfig
-  );
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _swPrecache = require('sw-precache');
+
+var _swPrecache2 = _interopRequireDefault(_swPrecache);
+
+var _constants = require('./constants');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var generateSWPrecacheConfig = function generateSWPrecacheConfig(_ref, extraSWPrecacheConfig) {
+  var root = _ref.root,
+      publicDir = _ref.publicDir,
+      logger = _ref.logger;
+
+  var hexoPublicDir = publicDir;
+  var rootPrefix = root.replace(/\/$/, '');
+  return Object.assign({
+    logger,
+    replacePrefix: rootPrefix,
+    staticFileGlobs: [hexoPublicDir + '/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff}'],
+    stripPrefix: hexoPublicDir
+  }, extraSWPrecacheConfig);
 };
 
-const runSWPrecache = function() {
-  const { public_dir: publicDir, config, log } = this;
-
-  const { root, offline } = config;
+var runSWPrecache = function runSWPrecache() {
+  var publicDir = this.public_dir,
+      config = this.config,
+      log = this.log;
+  var root = config.root,
+      offline = config.offline;
 
   // early return when no index.html presets in public directory
-  const indexHTMLPath = path.join(publicDir, "index.html");
-  if (!fs.existsSync(indexHTMLPath)) {
+
+  var indexHTMLPath = _path2.default.join(publicDir, 'index.html');
+  if (!_fs2.default.existsSync(indexHTMLPath)) {
     return Promise.resolve();
   }
 
-  const SWPrecacheConfig = generateSWPrecacheConfig(
-    { root, publicDir, logger: log.info.bind(log) },
-    offline
-  );
+  var SWPrecacheConfig = generateSWPrecacheConfig({ root, publicDir, logger: log.info.bind(log) }, offline);
 
-  return SWPrecache.write(path.join(publicDir, workerName), SWPrecacheConfig);
+  return _swPrecache2.default.write(_path2.default.join(publicDir, _constants.workerName), SWPrecacheConfig);
 };
 
-export default runSWPrecache;
+exports.default = runSWPrecache;
