@@ -38,6 +38,3 @@ jspm_packages
 
 # IntelliJ IDEA
 .idea
-
-# Built lib
-/lib/
